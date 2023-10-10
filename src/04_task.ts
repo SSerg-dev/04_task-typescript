@@ -1,35 +1,18 @@
-interface Data {
-  id: string;
-  title: string;
-  body: string;
-}
+import { IData } from "./index";
 
-interface ByIdData {
-  byId: {
-    [key: symbol | string | number]: Data;
-  };
-}
-interface AllIdsData {
-  allIds: string[]; 
-}
+export const getData = async (url: string): Promise<IData[]> => {
+  // Your code here...
 
-interface FullData extends ByIdData, AllIdsData {}
+  let comments;
+  try {
+    const response = await fetch(url);
+    comments = await response.json();
+  } catch (err) {
+    throw new Error("error connecting...");
+  }
 
-const fullData: FullData = {
-  byId: {},
-  allIds: [],
+  return comments; 
 };
 
-export const normalizeData = (unnormalizedData: Data[]) => {
-  unnormalizedData.map((item) => {
-    fullData.allIds.push(item.id);
-
-    fullData.byId[item.id] = {
-      id: item.id,
-      title: item.title,
-      body: item.body,
-    };
-  });
-
-  return fullData;
-};
+let fn: (url: string) => Promise<IData[]>;
+fn = getData;
